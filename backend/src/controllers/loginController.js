@@ -14,7 +14,6 @@ const loginController = {
                 return res.status(400).json({ err: -1000, msg: 'Incorrect password!' });
             const payload = {
                 userId: results[0]._id,
-                fullname: results[0].fullName,
             };
             const accessToken = jwt.sign(payload, process.env.PRIVATE_KEY);
             res.status(200).json({ err: 0, msg: 'Login successfully!', accessToken });

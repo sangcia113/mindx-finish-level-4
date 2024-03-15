@@ -1,3 +1,4 @@
+const { verifyToken } = require('../middlewares/authMiddleware');
 const route = require('express').Router();
 const userRoute = require('../routes/userRoute');
 const projectRoute = require('../routes/projectRoute');
@@ -7,6 +8,7 @@ const taskRoute = require('../routes/taskRoute');
 const assessmentRoute = require('../routes/assessmentRoute');
 const commentRoute = require('../routes/commentRoute');
 const mentionRoute = require('../routes/mentionRoute');
+route.use(verifyToken);
 route.use('/user', userRoute);
 route.use('/project', projectRoute);
 route.use('/user-project', userProjectRoute);
