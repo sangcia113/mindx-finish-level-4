@@ -9,7 +9,7 @@ const ProjectSchema = new mongoose.Schema({
     status: {
         type: String,
         require: true,
-        enum: ['Open', 'In Progress', 'In Review', 'Done', 'Re-Open', 'Cancel'],
+        enum: ['Prepaire', ''],
     },
     createdDate: { type: Date, require: true, default: Date.now() },
 });

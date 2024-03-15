@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     fullName: { type: String, require: true },
     gender: { type: String, require: true, enum: ['male', 'female', 'other'] },
-    birthday: { type: Date(), require: true },
+    birthday: { type: Date, require: true },
     description: { type: String, default: null },
     avatarLink: { type: String, default: null },
     email: { type: String, require: true, unique: true },

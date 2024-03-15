@@ -12,6 +12,7 @@ const userController = {
             await createUser(userData);
             res.status(201).json({ err: 0, msg: 'Insert user successfully!' });
         } catch (error) {
+            // check lại validation
             res.status(500).json({ err: -1000, msg: error });
         }
     },

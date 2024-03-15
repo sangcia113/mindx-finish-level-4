@@ -1,4 +1,5 @@
 const Project = require('../models/projectModel');
+// repository
 const projectService = {
     createProject: async projectData => await new Project(projectData).save(),
     getAllProject: async () => await new Project.find(),

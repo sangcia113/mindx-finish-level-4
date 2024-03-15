@@ -1,0 +1,18 @@
+const route = require('express').Router();
+const userRoute = require('../routes/userRoute');
+const projectRoute = require('../routes/projectRoute');
+const userProjectRoute = require('../routes/userProjectRoute');
+const stageRoute = require('../routes/stageRoute');
+const taskRoute = require('../routes/taskRoute');
+const assessmentRoute = require('../routes/assessmentRoute');
+const commentRoute = require('../routes/commentRoute');
+const mentionRoute = require('../routes/mentionRoute');
+route.use('/user', userRoute);
+route.use('/project', projectRoute);
+route.use('/user-project', userProjectRoute);
+route.use('/stage', stageRoute);
+route.use('/task', taskRoute);
+route.use('/assessment', assessmentRoute);
+route.use('/comment', commentRoute);
+route.use('/mention', mentionRoute);
+module.exports = route;

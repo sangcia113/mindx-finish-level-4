@@ -3,7 +3,7 @@ const {
     getAllTask,
     getTaskById,
     getTaskByStageId,
-    updateStask,
+    updateTask,
     deleteTask,
 } = require('../services/taskService');
 const taskController = {
@@ -46,7 +46,7 @@ const taskController = {
         try {
             const { taskId } = req.params;
             const taskData = req.body;
-            await updateStask(taskId, taskData);
+            await updateTask(taskId, taskData);
             res.status(201).json({ err: 0, msg: 'Update task successfully!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });

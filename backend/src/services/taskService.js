@@ -4,7 +4,7 @@ const taskService = {
     getAllTask: async () => await Task.find(),
     getTaskById: async taskId => await Task.findById(taskId),
     getTaskByStageId: async stageId => await Task.findOne({ stageId }),
-    updateStask: async (taskId, taskData) => await Task.findByIdAndUpdate(taskId, taskData),
+    updateTask: async (taskId, taskData) => await Task.findByIdAndUpdate(taskId, taskData),
     deleteTask: async taskId => await Task.findByIdAndDelete(taskId),
 };
 module.exports = taskService;
