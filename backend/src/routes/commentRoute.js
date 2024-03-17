@@ -8,11 +8,17 @@ const {
     updatecomment,
     deleteComment,
 } = require('../controllers/commentController');
-route.post('/', createComment);
+const {
+    checkBodyParameter,
+    checkCommentId,
+    checkTaskId,
+    checkUserId,
+} = require('../middlewares/commentMiddleware');
+route.post('/', checkBodyParameter, createComment);
 route.get('/all', getAllComment);
-route.get('/:id', getCommentById);
-route.get('/task/:id', getCommentByTaskId);
-route.get('/user/:id', getCommentByUserId);
-route.put('/:id', updatecomment);
-route.delete('/:id', deleteComment);
+route.get('/:commentId', checkCommentId, getCommentById);
+route.get('/task/:taskId', checkTaskId, getCommentByTaskId);
+route.get('/user/:userId', checkUserId, getCommentByUserId);
+route.put('/:commentId', checkCommentId, checkBodyParameter, updatecomment);
+route.delete('/:commentId', checkCommentId, deleteComment);
 module.exports = route;

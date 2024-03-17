@@ -6,9 +6,10 @@ const {
     updateProject,
     deleteProject,
 } = require('../controllers/projectController');
-route.post('/', createProject);
+const { checkBodyParameter, checkProjectId } = require('../middlewares/projectMiddleware');
+route.post('/', checkBodyParameter, createProject);
 route.get('/all', getAllProject);
-route.get('/:id', getProjectById);
-route.put('/:id', updateProject);
-route.delete('/:id', deleteProject);
+route.get('/:projectId', checkProjectId, getProjectById);
+route.put('/:projectId', checkProjectId, checkBodyParameter, updateProject);
+route.delete('/:projectId', checkProjectId, deleteProject);
 module.exports = route;

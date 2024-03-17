@@ -8,11 +8,17 @@ const {
     updateAssessment,
     deleteAssessment,
 } = require('../controllers/assessmentController');
-route.post('/', createAssessment);
+const {
+    checkBodyParameter,
+    checkAssessmentId,
+    checkStageId,
+    checkUserId,
+} = require('../middlewares/assessmentMiddleware');
+route.post('/', checkBodyParameter, createAssessment);
 route.get('/all', getAllAssessment);
-route.get('/:id', getAssessmentById);
-route.get('/stage/:id', getAssessmentByStageId);
-route.get('/user/:id', getAssessmentByUserId);
-route.put('/:id', updateAssessment);
-route.delete('/:id', deleteAssessment);
+route.get('/:assessmentId', checkAssessmentId, getAssessmentById);
+route.get('/stage/:stageId', checkStageId, getAssessmentByStageId);
+route.get('/user/:userId', checkUserId, getAssessmentByUserId);
+route.put('/:assessmentId', checkAssessmentId, checkBodyParameter, updateAssessment);
+route.delete('/:assessmentId', checkAssessmentId, deleteAssessment);
 module.exports = route;

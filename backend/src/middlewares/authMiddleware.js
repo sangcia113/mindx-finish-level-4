@@ -11,5 +11,29 @@ const authMiddleware = {
             next();
         });
     },
+    checkSignUpParameter: async (req, res, next) => {
+        const { username, password, confirmPassword } = req.body;
+        if (!username || username.includes(' '))
+            return res
+                .status(400)
+                .json({ err: -1000, msg: 'Missing username or username parameter include space!' });
+        if (!password)
+            return res.status(400).json({ err: -1000, msg: 'Missing password parameter!' });
+        if (!confirmPassword)
+            return res.status(400).json({ err: -1000, msg: 'Missing confirm password parameter!' });
+        if (password !== confirmPassword)
+            return res
+                .status(400)
+                .json({ err: -1002, msg: 'Password and confirm password dont match!' });
+        next();
+    },
+    checkSignInParameter: async (req, res, next) => {
+        const { username, password } = req.body;
+        if (!username)
+            return res.status(400).json({ err: -1000, msg: 'Missing username parameter!' });
+        if (!password)
+            return res.status(400).json({ err: -1000, msg: 'Missing password parameter!' });
+        next();
+    },
 };
 module.exports = authMiddleware;

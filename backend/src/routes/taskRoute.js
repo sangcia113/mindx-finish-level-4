@@ -7,10 +7,11 @@ const {
     updateTask,
     deleteTask,
 } = require('../controllers/taskController');
-route.post('/', createTask);
+const { checkBodyParameter, checkTaskId, checkStageId } = require('../middlewares/taskMiddleware');
+route.post('/', checkBodyParameter, createTask);
 route.get('/all', getAllTask);
-route.get('/:id', getTaskById);
-route.get('/stage/:id', getTaskByStageId);
-route.put('/:id', updateTask);
-route.delete('/:id', deleteTask);
+route.get('/:taskId', checkTaskId, getTaskById);
+route.get('/stage/:stageId', checkStageId, getTaskByStageId);
+route.put('/:taskId', checkTaskId, checkBodyParameter, updateTask);
+route.delete('/:taskId', checkTaskId, deleteTask);
 module.exports = route;

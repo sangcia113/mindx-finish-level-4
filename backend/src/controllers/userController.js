@@ -1,21 +1,5 @@
-const {
-    createUser,
-    getAllUser,
-    getUserById,
-    updateUser,
-    deleteUser,
-} = require('../services/userService');
+const { getAllUser, getUserById, updateUser, deleteUser } = require('../services/userService');
 const userController = {
-    createUser: async (req, res) => {
-        try {
-            const userData = req.body;
-            await createUser(userData);
-            res.status(201).json({ err: 0, msg: 'Insert user successfully!' });
-        } catch (error) {
-            // check lại validation
-            res.status(500).json({ err: -1000, msg: error });
-        }
-    },
     getAllUser: async (req, res) => {
         try {
             const results = await getAllUser();

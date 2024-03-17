@@ -7,10 +7,15 @@ const {
     updateStage,
     deleteStage,
 } = require('../controllers/stageController');
-route.post('/', createStage);
+const {
+    checkBodyParameter,
+    checkStageId,
+    checkProjectId,
+} = require('../middlewares/stageMiddleware');
+route.post('/', checkBodyParameter, createStage);
 route.get('/all', getAllStage);
-route.get('/:id', getStageById);
-route.get('/project/:id', getStageByProjectId);
-route.put('/:id', updateStage);
-route.delete('/:id', deleteStage);
+route.get('/:stageId', checkStageId, getStageById);
+route.get('/project/:projectId', checkProjectId, getStageByProjectId);
+route.put('/:stageId', checkStageId, checkBodyParameter, updateStage);
+route.delete('/:stageId', checkStageId, deleteStage);
 module.exports = route;

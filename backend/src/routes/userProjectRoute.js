@@ -8,11 +8,17 @@ const {
     updateUserProject,
     deleteUserProject,
 } = require('../controllers/userProjectController');
-route.post('/', createUserProject);
+const {
+    checkBodyParameter,
+    checkProjectId,
+    checkUserId,
+    checkUserProjectId,
+} = require('../middlewares/userProjectMiddleware');
+route.post('/', checkBodyParameter, createUserProject);
 route.get('/all', getAllUserProject);
-route.get('/:id', getUserProjectById);
-route.get('/user/:id', getUserProjectByUserId);
-route.get('/project/:id', getUserProjectByProjectId);
-route.put('/:id', updateUserProject);
-route.delete('/:id', deleteUserProject);
+route.get('/:userProjectId', checkUserProjectId, getUserProjectById);
+route.get('/user/:userId', checkUserId, getUserProjectByUserId);
+route.get('/project/:projectId', checkProjectId, getUserProjectByProjectId);
+route.put('/:userProjectId', checkUserProjectId, checkBodyParameter, updateUserProject);
+route.delete('/:userProjectId', checkUserProjectId, deleteUserProject);
 module.exports = route;

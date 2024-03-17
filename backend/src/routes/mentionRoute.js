@@ -8,11 +8,17 @@ const {
     updateMention,
     deleteMention,
 } = require('../controllers/mentionController');
-route.post('/', createMention);
+const {
+    checkBodyParameter,
+    checkMentionId,
+    checkCommentId,
+    checkUserId,
+} = require('../middlewares/mentionMiddleware');
+route.post('/', checkBodyParameter, createMention);
 route.get('/all', getAllMention);
-route.get('/:id', getMentionById);
-route.get('/comment/:id', getMentionByCommentId);
-route.get('/user/:id', getMentionByUserId);
-route.put('/:id', updateMention);
-route.delete('/:id', deleteMention);
+route.get('/:mentionId', checkMentionId, getMentionById);
+route.get('/comment/:commentId', checkCommentId, getMentionByCommentId);
+route.get('/user/:userId', checkUserId, getMentionByUserId);
+route.put('/:mentionId', checkMentionId, checkBodyParameter, updateMention);
+route.delete('/:mentionId', checkMentionId, deleteMention);
 module.exports = route;
