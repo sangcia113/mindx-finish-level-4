@@ -33,3 +33,6 @@ const projectMiddleware = {
     },
 };
 module.exports = projectMiddleware;
+// startDate > endDate ?
+// description min - max...
+// status nam trong dinh nghia

@@ -1,12 +1,20 @@
-import { Card, Flex, Form, Input, Layout, Typography } from 'antd';
+import { Button, Card, Flex, Form, Input, Layout, Typography } from 'antd';
 import { LockFilled, UserOutlined } from '@ant-design/icons';
+import instanceConnection from '../utils/instanceConnect';
 const { Item } = Form;
 const { Password } = Input;
-const { Text } = Typography;
+const { Link, Text } = Typography;
 const videoSource = require('../assets/videos/deepmind.mp4');
 
 const LoginPage = () => {
     const [form] = Form.useForm();
+    const onFinish = async values => {
+        try {
+            const response = await instanceConnection().post(`/sign-in`);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <Layout style={{ height: '100vh' }}>
             <video
@@ -37,7 +45,7 @@ const LoginPage = () => {
             >
                 <Flex justify="center">
                     <Text style={{ fontSize: 48, fontWeight: 'bold', marginBottom: 22 }}>
-                        L O G I N
+                        S I G N I N
                     </Text>
                 </Flex>
                 <Form form={form}>
@@ -62,6 +70,17 @@ const LoginPage = () => {
                             placeholder="Enter password..."
                             style={{ height: 42 }}
                         />
+                    </Item>
+                    <Item>
+                        <Button type="primary" style={{ height: 42, width: '100%' }}>
+                            Signin
+                        </Button>
+                    </Item>
+                    <Item>
+                        <Flex justify="space-between">
+                            <Link>Signup</Link>
+                            <Link>Forgot password?</Link>
+                        </Flex>
                     </Item>
                 </Form>
             </Card>

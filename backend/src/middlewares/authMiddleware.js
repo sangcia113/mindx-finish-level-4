@@ -37,3 +37,4 @@ const authMiddleware = {
     },
 };
 module.exports = authMiddleware;
+// array error

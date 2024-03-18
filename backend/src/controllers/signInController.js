@@ -14,7 +14,7 @@ const signIncontroller = {
                 userId: results._id,
                 fullname: results.fullName,
             };
-            const accessToken = jwt.sign(payload, process.env.PRIVATE_KEY, { expiresIn: 900 });
+            const accessToken = jwt.sign(payload, process.env.PRIVATE_KEY, { expiresIn: '1h' });
             res.status(200).json({ err: 0, msg: 'Login successfully!', accessToken });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
@@ -22,3 +22,6 @@ const signIncontroller = {
     },
 };
 module.exports = signIncontroller;
+// bo sung RT
+// username min 10, max 20
+// password include space, min max...
