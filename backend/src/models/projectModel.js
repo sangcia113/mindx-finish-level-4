@@ -11,6 +11,7 @@ const ProjectSchema = new mongoose.Schema({
         require: true,
         enum: ['Preparation', 'In Progress', 'Suspended', 'Completed'],
     },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true },
     createdDate: { type: Date, require: true, default: Date.now() },
 });
 const Project = mongoose.model('Project', ProjectSchema);

@@ -1,4 +1,4 @@
-const momentjs = require('moment');
+const { body, validationResult } = require('express-validator');
 const projectMiddleware = {
     checkProjectId: async (req, res, next) => {
         const { projectId } = req.params;
@@ -6,33 +6,36 @@ const projectMiddleware = {
             return res.status(400).json({ err: -1000, msg: 'Missing project id parameter!' });
         next();
     },
-    checkBodyParameter: async (req, res, next) => {
-        const { code, name, startDate, endDate, description, status } = req.body;
-        if (!code || code.includes(' '))
-            return res.status(400).json({
-                err: -1000,
-                msg: 'Missing project code or incorrect project code!',
-            });
-        if (!name)
-            return res.status(400).json({ err: -1000, msg: 'Missing project name parameter!' });
-        if (!startDate || !momentjs(startDate, 'YYYY-MM-DD', true).isValid())
-            return res
-                .status(400)
-                .json({ err: -1000, msg: 'Missing start date or incorrect start date parameter!' });
-        if (!endDate || !momentjs(endDate, 'YYYY-MM-DD', true).isValid())
-            return res
-                .status(400)
-                .json({ err: -1000, msg: 'Missing end date or incorrect end date parameter!' });
-        if (!description)
-            return res
-                .status(400)
-                .json({ err: -1000, msg: 'Missing project desciption parameter!' });
-        if (!status)
-            return res.status(400).json({ err: -1000, msg: 'Missing project status parameter!' });
-        next();
-    },
+    checkBodyParameter: [
+        body('name').isLength({ min: 5, max: 50 }).withMessage('Tên dự án phải từ 5 đến 50 ký tự!'),
+        body('startDate')
+            .isDate({ format: 'YYYY-MM-DD' })
+            .withMessage('Ngày bắt đầu phải có định dạng yyyy-mm-dd!'),
+        body('endDate')
+            .isDate({ format: 'YYYY-MM-DD' })
+            .withMessage('Ngày bắt đầu phải có định dạng yyyy-mm-dd!'),
+        body('description')
+            .isLength({ min: 5, max: 50 })
+            .withMessage('Mô tả dự án phải từ 5 đến 50 ký tự!'),
+        body('status')
+            .isIn(['Preparation', 'In Progress', 'Suspended', 'Completed'])
+            .withMessage('Trạng thái không hợp lệ!'),
+        body('userId')
+            .isMongoId()
+            .withMessage('UserId không hợp lệ!')
+            .notEmpty()
+            .withMessage('UserId không được để trống!'),
+        body().custom(value => {
+            const startDate = new Date(value.startDate);
+            const endDate = new Date(value.endDate);
+            if (startDate >= endDate) throw new Error('Ngày bắt đầu phải trước ngày kết thúc!');
+            return true;
+        }),
+        (req, res, next) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+            next();
+        },
+    ],
 };
 module.exports = projectMiddleware;
-// startDate > endDate ?
-// description min - max...
-// status nam trong dinh nghia

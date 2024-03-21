@@ -7,8 +7,7 @@ const {
 } = require('../controllers/userController');
 const { checkUserId, checkBodyParameter } = require('../middlewares/userMiddleware');
 route.get('/all', getAllUser);
-// req.decoded
 route.get('/:userId', checkUserId, getUserById);
-route.put('/:userId', checkUserId, checkBodyParameter, updateUser);
+route.put('/', checkUserId, checkBodyParameter, updateUser);
 route.delete('/:userId', checkUserId, deleteUser);
 module.exports = route;

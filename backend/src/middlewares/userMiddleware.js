@@ -1,37 +1,27 @@
-const momentjs = require('moment');
+const { body, param, validationResult } = require('express-validator');
 const userMiddleware = {
     checkUserId: (req, res, next) => {
-        const { userId } = req.params;
+        const { userId } = req.decoded;
         if (!userId) return res.status(400).json({ err: -1000, msg: 'Missing user id parameter!' });
         next();
     },
-    checkBodyParameter: (req, res, next) => {
-        const { fullName, gender, birthday, email, numberPhone, username, password } = req.body;
-        if (!fullName)
-            return res.status(400).json({ err: -1001, msg: 'Missing fullname parameter!' });
-        if (!gender) return res.status(400).json({ err: -1001, msg: 'Missing gender parameter!' });
-        if (!birthday || !momentjs(birthday, 'YYYY-MM-DD', true).isValid())
-            return res.status(400).json({
-                err: -1001,
-                msg: 'Missing birthday or incorrect birthday parameter!',
-            });
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-            return res
-                .status(400)
-                .json({ err: -1001, msg: 'Missing email or incorrect email parameter!' });
-        if (!numberPhone || !/^\d{10,11}$/.test(numberPhone) || numberPhone.includes(' '))
-            return res.status(400).json({
-                err: -1001,
-                msg: 'Missing numberPhone or incorrect numberphone parameter!',
-            });
-        if (!username || username.includes(' '))
-            return res.status(400).json({
-                err: -1001,
-                msg: 'Missing username parameter or username includes space!',
-            });
-        if (!password)
-            return res.status(400).json({ err: -1001, msg: 'Missing password parameter!' });
-        next();
-    },
+    checkBodyParameter: [
+        body('fullName')
+            .isLength({ max: 50 })
+            .withMessage('Fullname tối đa 50 ký tự!')
+            .matches(/^[a-zA-Z\s]+$/)
+            .withMessage('Fullname chỉ được chứa ký tự!'),
+        body('gender').isIn(['male', 'female', 'other']).withMessage('Giới tính không hợp lệ!'),
+        body('birthday').isDate({ format: 'YYYY-MM-DD' }).withMessage('Ngày sinh không hợp lệ!'),
+        body('email').isEmail().withMessage('Không đúng định dạng email!'),
+        body('numberPhone')
+            .matches(/^\d{10,11}$/)
+            .withMessage('Số điện thoại phải có 10 hoặc 11 ký tự!'),
+        (req, res, next) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+            next();
+        },
+    ],
 };
 module.exports = userMiddleware;

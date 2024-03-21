@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const authMiddleware = {
     verifyToken: async (req, res, next) => {
@@ -11,30 +12,26 @@ const authMiddleware = {
             next();
         });
     },
-    checkSignUpParameter: async (req, res, next) => {
-        const { username, password, confirmPassword } = req.body;
-        if (!username || username.includes(' '))
-            return res
-                .status(400)
-                .json({ err: -1000, msg: 'Missing username or username parameter include space!' });
-        if (!password)
-            return res.status(400).json({ err: -1000, msg: 'Missing password parameter!' });
-        if (!confirmPassword)
-            return res.status(400).json({ err: -1000, msg: 'Missing confirm password parameter!' });
-        if (password !== confirmPassword)
-            return res
-                .status(400)
-                .json({ err: -1002, msg: 'Password and confirm password dont match!' });
-        next();
-    },
-    checkSignInParameter: async (req, res, next) => {
-        const { username, password } = req.body;
-        if (!username)
-            return res.status(400).json({ err: -1000, msg: 'Missing username parameter!' });
-        if (!password)
-            return res.status(400).json({ err: -1000, msg: 'Missing password parameter!' });
-        next();
-    },
+    checkSignParameter: [
+        body('username')
+            .isLength({ min: 6, max: 20 })
+            .withMessage('Username phải có độ dài từ 6 đến 20 ký tự')
+            .custom(value => !/\s/.test(value))
+            .withMessage('Username không được chứa khoảng trắng')
+            .custom(value => /^[a-zA-Z0-9]*$/.test(value))
+            .withMessage('Username không được chứa ký tự đặc biệt!')
+            .matches(/^[a-zA-Z0-9]+$/)
+            .withMessage('Username chỉ được chứa ký tự và số'),
+        body('password')
+            .isLength({ min: 6, max: 30 })
+            .withMessage('Password phải có độ dài từ 6 đến 30 ký tự')
+            .custom(value => !/\s/.test(value))
+            .withMessage('Password không được chứa khoảng trắng'),
+        (req, res, next) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+            next();
+        },
+    ],
 };
 module.exports = authMiddleware;
-// array error

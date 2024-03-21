@@ -1,5 +1,5 @@
 const route = require('express').Router();
+const { checkSignParameter } = require('../middlewares/authMiddleware');
 const { checkSignUp } = require('../controllers/signUpController');
-const { checkSignUpParameter } = require('../middlewares/authMiddleware');
-route.post('/', checkSignUpParameter, checkSignUp);
+route.post('/', checkSignParameter, checkSignUp);
 module.exports = route;
