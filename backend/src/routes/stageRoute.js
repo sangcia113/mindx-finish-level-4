@@ -1,21 +1,15 @@
 const route = require('express').Router();
 const {
     createStage,
-    getAllStage,
     getStageById,
-    getStageByProjectId,
+    getStageByQuery,
     updateStage,
     deleteStage,
 } = require('../controllers/stageController');
-const {
-    checkBodyParameter,
-    checkStageId,
-    checkProjectId,
-} = require('../middlewares/stageMiddleware');
+const { checkBodyParameter, checkStageId } = require('../middlewares/stageMiddleware');
 route.post('/', checkBodyParameter, createStage);
-route.get('/all', getAllStage);
+route.get('/search', getStageByQuery);
 route.get('/:stageId', checkStageId, getStageById);
-route.get('/project/:projectId', checkProjectId, getStageByProjectId);
 route.put('/:stageId', checkStageId, checkBodyParameter, updateStage);
 route.delete('/:stageId', checkStageId, deleteStage);
 module.exports = route;

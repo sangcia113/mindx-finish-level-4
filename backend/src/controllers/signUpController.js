@@ -6,9 +6,8 @@ const signUpController = {
         try {
             const hashedPassword = encodePassword(req.body.password);
             await createUser({ ...userData, password: hashedPassword });
-            res.status(201).json({ err: 0, msg: 'Signup successfully!' });
+            res.status(200).json({ err: 0, msg: 'Đăng ký thành công!' });
         } catch (error) {
-            console.log(error);
             res.status(500).json({ err: -1001, msg: error });
         }
     },

@@ -1,53 +1,50 @@
 const {
     createStage,
-    getAllStage,
     getStageById,
-    getStageByProjectId,
+    getStageByQuery,
     updateStage,
     deleteStage,
 } = require('../services/stageService');
 const stageController = {
     createStage: async (req, res) => {
+        const stageData = req.body;
         try {
-            const stageData = req.body;
             await createStage(stageData);
-            res.status(201).json({ err: 0, msg: 'Insert stage successfully!' });
-        } catch (error) {
-            res.status(500).json({ err: -1000, msg: error });
-        }
-    },
-    getAllStage: async (req, res) => {
-        try {
-            const results = await getAllStage();
-            res.status(201).json(results);
+            res.status(200).json({ err: 0, msg: 'Thêm stage thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     getStageById: async (req, res) => {
+        const { stageId } = req.params;
         try {
-            const { stageId } = req.params;
             const results = await getStageById(stageId);
-            res.status(201).json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
-    getStageByProjectId: async (req, res) => {
+    getStageByQuery: async (req, res) => {
+        const { projectId, name, startDate, endDate, dueDate } = req.query;
+        const query = {};
+        if (projectId) query.projectId = projectId;
+        if (name) query.name = name;
+        if (startDate) query.startDate = { $gte: new Date(startDate) };
+        if (endDate) query.endDate = { $lte: new Date(endDate) };
+        if (dueDate) query.dueDate = { $lte: new Date(dueDate) };
         try {
-            const { projectId } = req.params;
-            const results = await getStageByProjectId(projectId);
-            res.status(201).json(results);
+            const results = await getStageByQuery(query);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     updateStage: async (req, res) => {
+        const { stageId } = req.params;
+        const stageData = req.body;
         try {
-            const { stageId } = req.params;
-            const stageData = req.body;
             await updateStage(stageId, stageData);
-            res.status(201).json({ err: 0, msg: 'Update stage successfully!' });
+            res.status(200).json({ err: 0, msg: 'Cập nhật stage thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
@@ -56,7 +53,7 @@ const stageController = {
         try {
             const { stageId } = req.params;
             await deleteStage(stageId);
-            res.status(201).json({ err: 0, msg: 'Delete stage successfully!' });
+            res.status(200).json({ err: 0, msg: 'Xoá stage thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }

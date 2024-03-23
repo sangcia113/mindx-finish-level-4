@@ -7,15 +7,16 @@ const signIncontroller = {
         const { username, password } = req.body;
         try {
             const results = await getUserByUsername(username);
-            if (!results) return res.status(400).json({ err: -1000, msg: 'Username not found!' });
+            if (!results)
+                return res.status(400).json({ err: -1000, msg: 'Người dùng không tồn tại!' });
             if (!decodePassword(password, results.password))
-                return res.status(400).json({ err: -1000, msg: 'Incorrect password!' });
+                return res.status(400).json({ err: -1000, msg: 'Mật khẩu không chính xác!' });
             const payload = {
                 userId: results._id,
                 fullname: results.fullName,
             };
             const accessToken = jwt.sign(payload, process.env.PRIVATE_KEY, { expiresIn: '1h' });
-            res.status(200).json({ err: 0, msg: 'Login successfully!', accessToken });
+            res.status(200).json({ err: 0, msg: 'Đăng nhập thành công!', accessToken });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
@@ -23,5 +24,3 @@ const signIncontroller = {
 };
 module.exports = signIncontroller;
 // bo sung RT
-// username min 10, max 20
-// password include space, min max...

@@ -1,5 +1,5 @@
-const { body } = require('express-validator');
-const momentjs = require('moment');
+const { body, validationResult } = require('express-validator');
+const { getProjectById } = require('../services/projectService');
 const stageMiddleware = {
     checkStageId: async (req, res, next) => {
         const { stageId } = req.params;
@@ -7,33 +7,32 @@ const stageMiddleware = {
             return res.status(400).json({ err: -1000, msg: 'Missing stage id parameter!' });
         next();
     },
-    checkProjectId: async (req, res, next) => {
-        const { projectId } = req.params;
-        if (!projectId)
-            return res.status(400).json({ err: -1000, msg: 'Missing project id parameter!' });
-        next();
-    },
-    // checkBodyParameter: async (req, res, next) => {
-    //     const { projectId, name, startDate, endDate } = req.body;
-    //     if (!projectId)
-    //         return res.status(400).json({ err: -1001, msg: 'Missing project id parameter!' });
-    //     if (!name) return res.status(400).json({ err: -1001, msg: 'Missing name parameter!' });
-    //     if (!startDate || !momentjs(startDate, 'YYYY-MM-DD', true).isValid())
-    //         return res
-    //             .status(400)
-    //             .json({ err: -1001, msg: 'Missing start date or incorrect start date parameter!' });
-    //     if (!endDate || !momentjs(endDate, 'YYYY-MM-DD', true).isValid())
-    //         return res
-    //             .status(400)
-    //             .json({ err: -1001, msg: 'Missing end date or incorrect end date parameter!' });
-    //     next();
-    // },
     checkBodyParameter: [
         body('projectId')
             .isMongoId()
             .withMessage('projectId không hợp lệ!')
             .notEmpty()
             .withMessage('projectId không được để trống!'),
+        body('name').isLength({ min: 5, max: 50 }).withMessage('Tên stage phải từ 5 đến 50 ký tự!'),
+        body('startDate')
+            .isDate({ format: 'YYYY-MM-DD' })
+            .withMessage('Ngày bắt đầu phải có định dạng yyyy-mm-dd!'),
+        body('endDate')
+            .isDate({ format: 'YYYY-MM-DD' })
+            .withMessage('Ngày bắt đầu phải có định dạng yyyy-mm-dd!'),
+        body().custom(async value => {
+            const projectId = await getProjectById(value.projectId);
+            const startDate = new Date(value.startDate);
+            const endDate = new Date(value.endDate);
+            if (!projectId) throw new Error('ProjectId không hợp lệ!');
+            if (startDate >= endDate) throw new Error('Ngày bắt đầu phải trước ngày kết thúc!');
+            return true;
+        }),
+        (req, res, next) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+            next();
+        },
     ],
 };
 module.exports = stageMiddleware;

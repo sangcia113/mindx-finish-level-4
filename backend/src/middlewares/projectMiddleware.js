@@ -1,9 +1,10 @@
 const { body, validationResult } = require('express-validator');
+const { STATUS_PROJECT } = require('../constants');
 const projectMiddleware = {
     checkProjectId: async (req, res, next) => {
         const { projectId } = req.params;
         if (!projectId)
-            return res.status(400).json({ err: -1000, msg: 'Missing project id parameter!' });
+            return res.status(400).json({ err: -1000, msg: 'Thiếu tham số projectId!' });
         next();
     },
     checkBodyParameter: [
@@ -13,18 +14,11 @@ const projectMiddleware = {
             .withMessage('Ngày bắt đầu phải có định dạng yyyy-mm-dd!'),
         body('endDate')
             .isDate({ format: 'YYYY-MM-DD' })
-            .withMessage('Ngày bắt đầu phải có định dạng yyyy-mm-dd!'),
+            .withMessage('Ngày kết thúc phải có định dạng yyyy-mm-dd!'),
         body('description')
-            .isLength({ min: 5, max: 50 })
-            .withMessage('Mô tả dự án phải từ 5 đến 50 ký tự!'),
-        body('status')
-            .isIn(['Preparation', 'In Progress', 'Suspended', 'Completed'])
-            .withMessage('Trạng thái không hợp lệ!'),
-        body('userId')
-            .isMongoId()
-            .withMessage('UserId không hợp lệ!')
-            .notEmpty()
-            .withMessage('UserId không được để trống!'),
+            .isLength({ min: 5, max: 500 })
+            .withMessage('Mô tả dự án phải từ 5 đến 500 ký tự!'),
+        body('status').isIn(STATUS_PROJECT).withMessage('Trạng thái không hợp lệ!'),
         body().custom(value => {
             const startDate = new Date(value.startDate);
             const endDate = new Date(value.endDate);

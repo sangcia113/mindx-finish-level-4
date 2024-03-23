@@ -1,4 +1,6 @@
 const { body, validationResult } = require('express-validator');
+const { getUserById } = require('../services/userService');
+const { getProjectById } = require('../services/projectService');
 const userProjectMiddleware = {
     checkUserProjectId: async (req, res, next) => {
         const { userProjectId } = req.params;
@@ -25,15 +27,22 @@ const userProjectMiddleware = {
             .withMessage('UserId không được để trống!'),
         body('projectId')
             .isMongoId()
-            .withMessage('projectId không hợp lệ!')
+            .withMessage('ProjectId không hợp lệ!')
             .notEmpty()
-            .withMessage('projectId không được để trống!'),
+            .withMessage('ProjectId không được để trống!'),
         body('role')
             .isIn(['Project Owner', 'Project Manager', 'Regular Member', 'Project Supervisor'])
             .withMessage('Role không hợp lệ!'),
         body('dateOfJoin')
             .isDate({ format: 'YYYY-MM-DD' })
             .withMessage('Ngày tham gia không hợp lệ!'),
+        body().custom(async value => {
+            const userId = await getUserById(userId);
+            const projectId = await getProjectById(projectId);
+            if (userId) throw new Error('UserId không hợp lệ!');
+            if (projectId) throw new Error('ProjectId không hợp lệ!');
+            return true;
+        }),
         (req, res, next) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });

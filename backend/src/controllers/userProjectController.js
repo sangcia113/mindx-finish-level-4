@@ -1,72 +1,58 @@
 const {
     createUserProject,
-    getAllUserProject,
     getUserProjectById,
-    getUserProjectByUserId,
-    getUserProjectByProjectId,
+    getUserProjectByQuery,
     updateUserProject,
     deleteUserProject,
 } = require('../services/userProjectService');
 const userProjectController = {
     createUserProject: async (req, res) => {
+        const userProjectData = req.body;
         try {
-            const userProjectData = req.body;
             await createUserProject(userProjectData);
-            res.status(201).json({ err: 0, msg: 'Insert user project successfully!' });
-        } catch (error) {
-            res.status(500).json({ err: -1000, msg: error });
-        }
-    },
-    getAllUserProject: async (req, res) => {
-        try {
-            const results = await getAllUserProject();
-            res.status(201).json(results);
+            res.status(200).json({ err: 0, msg: 'Tạo user project thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     getUserProjectById: async (req, res) => {
+        const { userProjectId } = req.params;
         try {
-            const { userProjectId } = req.params;
             const results = await getUserProjectById(userProjectId);
-            res.status(201).json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
-    getUserProjectByUserId: async (req, res) => {
+    getUserProjectByQuery: async (req, res) => {
+        const { userId, projectId, role, dateOfJoin } = req.query;
+        const query = {};
+        if (userId) query.userId = userId;
+        if (projectId) query.projectId = projectId;
+        if (role) query.role = role;
+        if (dateOfJoin) query.dateOfJoin = dateOfJoin;
         try {
-            const { userId } = req.params;
-            const results = await getUserProjectByUserId(userId);
-            res.status(201).json(results);
-        } catch (error) {
-            res.status(500).json({ err: -1000, msg: error });
-        }
-    },
-    getUserProjectByProjectId: async (req, res) => {
-        try {
-            const { projectId } = req.params;
-            const results = await getUserProjectByProjectId(projectId);
-            res.status(201).json(results);
+            const results = await getUserProjectByQuery(query);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     updateUserProject: async (req, res) => {
+        const { userProjectId } = req.params;
+        const userProjectData = req.body;
         try {
-            const { userProjectId } = req.params;
-            const userProjectData = req.body;
             await updateUserProject(userProjectId, userProjectData);
-            res.status(201).json({ err: 0, msg: 'Update user project successfully!' });
+            res.status(200).json({ err: 0, msg: 'Cập nhật user project thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     deleteUserProject: async (req, res) => {
+        const { userProjectId } = req.params;
         try {
-            const { userProjectId } = req.params;
             await deleteUserProject(userProjectId);
-            res.status(201).json({ err: 201, msg: 'Delete user project successfully!' });
+            res.status(200).json({ err: 200, msg: 'Xoá user project thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }

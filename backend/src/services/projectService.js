@@ -2,10 +2,10 @@ const Project = require('../models/projectModel');
 // repository
 const projectService = {
     createProject: async projectData => await new Project(projectData).save(),
-    getAllProject: async () => await new Project.find(),
     getProjectById: async projectId => await Project.findById(projectId),
-    updateProject: async (projectId, projectData) =>
-        await Project.findByIdAndUpdate(projectId, projectData),
+    getProjectByQuery: async query => await Project.find(query),
+    updateProject: async (userId, projectId, projectData) =>
+        await Project.findOneAndUpdate({ _id: projectId, userId }, projectData),
     deleteProject: async projectId => await Project.findByIdAndDelete(projectId),
 };
 module.exports = projectService;

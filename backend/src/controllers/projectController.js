@@ -1,52 +1,64 @@
 const {
     createProject,
-    getAllProject,
     getProjectById,
+    getProjectByQuery,
     updateProject,
     deleteProject,
 } = require('../services/projectService');
 const projectController = {
     createProject: async (req, res) => {
+        const { userId } = req.decoded;
+        const projectData = req.body;
         try {
-            const projectData = req.body;
-            await createProject(projectData);
-            res.status(201).json({ err: 0, msg: 'Insert project successfully!' });
-        } catch (error) {
-            res.status(500).json({ err: -1000, msg: error });
-        }
-    },
-    getAllProject: async (req, res) => {
-        try {
-            const results = await getAllProject();
-            res.status(201).json(results);
+            await createProject({ ...projectData, userId });
+            res.status(200).json({ err: 0, msg: 'Tạo project thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     getProjectById: async (req, res) => {
+        const { projectId } = req.params;
         try {
-            const { projectId } = req.params;
             const results = await getProjectById(projectId);
-            res.status(201).json(results);
+            res.status(200).json(results);
+        } catch (error) {
+            res.status(500).json({ err: -1000, msg: error });
+        }
+    },
+    getProjectByQuery: async (req, res) => {
+        const { code, name, startDate, endDate, dueDate, status, userId } = req.query;
+        const query = {};
+        // code name tìm gần đúng
+        if (code) query.code = code;
+        if (name) query.name = name;
+        if (startDate) query.startDate = { $gte: new Date(startDate) };
+        if (endDate) query.endDate = { $lte: new Date(endDate) };
+        if (dueDate) query.dueDate = { $lte: new Date(endDate) };
+        if (status) query.status = status;
+        if (userId) query.userId = userId;
+        try {
+            const results = await getProjectByQuery(query);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     updateProject: async (req, res) => {
+        const { userId } = req.decoded;
+        const { projectId } = req.params;
+        const projectData = req.body;
         try {
-            const { projectId } = req.params;
-            const projectData = req.body;
-            await updateProject(projectId, projectData);
-            res.status(201).json({ err: 0, msg: 'Update project successfully!' });
+            await updateProject(userId, projectId, projectData);
+            res.status(200).json({ err: 0, msg: 'Cập nhật project thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     deleteProject: async (req, res) => {
+        const { projectId } = req.params;
         try {
-            const { projectId } = req.params;
             await deleteProject(projectId);
-            res.status(201).json({ err: 0, msg: 'Delete project successfully!' });
+            res.status(200).json({ err: 0, msg: 'Xoá project thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }

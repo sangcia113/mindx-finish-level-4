@@ -1,73 +1,57 @@
 const {
     createAssessment,
-    getAllAssessment,
     getAssessmentById,
-    getAssessmentByStageId,
-    getAssessmentByUserId,
     updateAssessment,
     deleteAssessment,
+    getAssessmentByQuery,
 } = require('../services/assessmentService');
 
 const assessmentController = {
     createAssessment: async (req, res) => {
+        const assessmentData = req.body;
         try {
-            const assessmentData = req.body;
             await createAssessment(assessmentData);
-            res.status(201).json({ err: 0, msg: 'Insert assessment successfully!' });
-        } catch (error) {
-            res.status(500).json({ err: -1000, msg: error });
-        }
-    },
-    getAllAssessment: async (req, res) => {
-        try {
-            const results = await getAllAssessment();
-            res.status(201).json(results);
+            res.status(200).json({ err: 0, msg: 'Tạo assessment thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     getAssessmentById: async (req, res) => {
+        const { assessmentId } = req.params;
         try {
-            const { assessmentId } = req.params;
             const results = await getAssessmentById(assessmentId);
-            res.status(201).json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
-    getAssessmentByStageId: async (req, res) => {
+    getAssessmentByQuery: async (req, res) => {
+        const { stageId, userId } = req.query;
+        const query = {};
+        if (stageId) query.stageId = stageId;
+        if (userId) query.userId = userId;
         try {
-            const { stageId } = req.params;
-            const results = await getAssessmentByStageId(stageId);
-            res.status(201).json(results);
-        } catch (error) {
-            res.status(500).json({ err: -1000, msg: error });
-        }
-    },
-    getAssessmentByUserId: async (req, res) => {
-        try {
-            const { userId } = req.params;
-            const results = await getAssessmentByUserId(userId);
-            res.status(201).json(results);
+            const results = await getAssessmentByQuery(query);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     updateAssessment: async (req, res) => {
+        const { assessmentId } = req.params;
+        const assessmentData = req.body;
         try {
-            const { assessmentId } = req.params;
-            const assessmentData = req.body;
             await updateAssessment(assessmentId, assessmentData);
-            res.status(201).json({ err: 0, msg: 'Update assessment successfully!' });
+            res.status(200).json({ err: 0, msg: 'Cập nhật assessment thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     deleteAssessment: async (req, res) => {
+        const { assessmentId } = req.params;
         try {
-            const { assessmentId } = req.params;
             await deleteAssessment(assessmentId);
-            res.status(201).json({ err: 0, msg: 'Delete assessment successfully!' });
+            res.status(200).json({ err: 0, msg: 'Xoá assessment thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }

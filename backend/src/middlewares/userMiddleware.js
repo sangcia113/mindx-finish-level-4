@@ -1,10 +1,5 @@
-const { body, param, validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const userMiddleware = {
-    checkUserId: (req, res, next) => {
-        const { userId } = req.decoded;
-        if (!userId) return res.status(400).json({ err: -1000, msg: 'Missing user id parameter!' });
-        next();
-    },
     checkBodyParameter: [
         body('fullName')
             .isLength({ max: 50 })

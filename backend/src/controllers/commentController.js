@@ -1,72 +1,56 @@
 const {
     createComment,
-    getAllComment,
     getCommentById,
-    getCommentByTaskId,
-    getCommentByUserId,
+    getCommentByQuery,
     updateComment,
     deleteComment,
 } = require('../services/commentService');
 const commentController = {
     createComment: async (req, res) => {
+        const commentData = req.body;
         try {
-            const commentData = req.body;
             await createComment(commentData);
-            res.status(201).json({ err: 0, msg: 'Insert comment successfully!' });
-        } catch (error) {
-            res.status(500).json({ err: -1000, msg: error });
-        }
-    },
-    getAllComment: async (req, res) => {
-        try {
-            const results = await getAllComment();
-            res.status(201).json(results);
+            res.status(200).json({ err: 0, msg: 'Thêm comment thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     getCommentById: async (req, res) => {
+        const { commentId } = req.params;
         try {
-            const { commentId } = req.params;
             const results = await getCommentById(commentId);
-            res.status(201).json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
-    getCommentByTaskId: async (req, res) => {
+    getCommentByQuery: async (req, res) => {
+        const { taskId, userId } = req.query;
+        const query = {};
+        if (taskId) query.taskId = taskId;
+        if (userId) query.userId = userId;
         try {
-            const { taskId } = req.params;
-            const results = await getCommentByTaskId(taskId);
-            res.status(201).json(results);
+            const results = await getCommentByQuery(query);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
-    getCommentByUserId: async (req, res) => {
+    updateComment: async (req, res) => {
+        const { commentId } = req.params;
+        const commentData = req.body;
         try {
-            const { userId } = req.params;
-            const results = await getCommentByUserId(userId);
-            res.status(201).json(results);
-        } catch (error) {
-            res.status(500).json({ err: -1000, msg: error });
-        }
-    },
-    updatecomment: async (req, res) => {
-        try {
-            const { commentId } = req.params;
-            const commentData = req.body;
             await updateComment(commentId, commentData);
-            res.status(201).json({ err: 0, msg: 'Update comment successfully!' });
+            res.status(200).json({ err: 0, msg: 'Cập nhật comment thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
     },
     deleteComment: async (req, res) => {
+        const { commentId } = req.params;
         try {
-            const { commentId } = req.params;
             await deleteComment(commentId);
-            res.status(201).json({ err: 0, msg: 'Delete comment successfully!' });
+            res.status(200).json({ err: 0, msg: 'Xoá comment thành công!' });
         } catch (error) {
             res.status(500).json({ err: -1000, msg: error });
         }
