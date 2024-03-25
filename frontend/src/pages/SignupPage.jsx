@@ -9,10 +9,12 @@ const { Text } = Typography;
 const videoSource = require('../assets/videos/deepmind.mp4');
 const SigupPage = () => {
     const [loading, setLoading] = useState(false);
+    const [current, setCurrent] = useState(0);
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const onFinish = async values => {
+        // Thong bao loi o truong confirm password
         const { password, confirmPassword } = values;
         if (password !== confirmPassword)
             api.error({
@@ -66,15 +68,21 @@ const SigupPage = () => {
             >
                 <Spin spinning={loading} tip="Vui lòng đợi...">
                     <Flex justify="center">
-                        <Text style={{ fontSize: 48, fontWeight: 'bold', marginBottom: 22 }}>
-                            S I G N U P
+                        <Text style={{ fontSize: 40, fontWeight: 'bold', marginBottom: 22 }}>
+                            Đ Ă N G K Ý
                         </Text>
                     </Flex>
                     <Form form={form} layout="vertical" onFinish={onFinish}>
                         <Item
-                            label="Username"
+                            label="Tài khoản"
                             name="username"
-                            rules={[{ required: true, message: `Bạn chưa nhập tài khoản!` }]}
+                            rules={[
+                                {
+                                    message: `Bạn chưa nhập tài khoản!`,
+                                    required: true,
+                                    whitespace: true,
+                                },
+                            ]}
                         >
                             <Input
                                 allowClear
@@ -84,9 +92,15 @@ const SigupPage = () => {
                             />
                         </Item>
                         <Item
-                            label="Password"
+                            label="Mật khẩu"
                             name="password"
-                            rules={[{ required: true, message: `Bạn chưa nhập mật khẩu!` }]}
+                            rules={[
+                                {
+                                    message: `Bạn chưa nhập mật khẩu!`,
+                                    required: true,
+                                    whitespace: true,
+                                },
+                            ]}
                         >
                             <Password
                                 allowClear
@@ -96,9 +110,15 @@ const SigupPage = () => {
                             />
                         </Item>
                         <Item
-                            label="Confirm password"
+                            label="Xác nhận mật khẩu"
                             name="confirmPassword"
-                            rules={[{ required: true, message: `Bạn chưa nhập lại mật khẩu!` }]}
+                            rules={[
+                                {
+                                    message: `Bạn chưa nhập lại mật khẩu!`,
+                                    required: true,
+                                    whitespace: true,
+                                },
+                            ]}
                         >
                             <Password
                                 allowClear
